@@ -49,7 +49,7 @@ def login_user():
     # find user in db with that email address
     stmt = db.select(User).filter_by(email=body_data.get("email"))
     user = db.session.scalar(stmt)
-    # if user exists and passowrd is correct
+    # if user exists and password is correct
     if user and bcrypt.check_password_hash(user.password, body_data.get("password")):
         # create jwt
         token = create_access_token(identity=str(user.id), expires_delta=timedelta(days=1))

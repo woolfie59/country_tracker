@@ -1,7 +1,10 @@
+from datetime import date
+
 from flask import Blueprint
 
 from init import db, bcrypt
 from models.user import User
+from models.visited import Visited
 
 db_commands = Blueprint("db", __name__)
 
@@ -32,6 +35,23 @@ def seed_tables():
     ]
 
     db.session.add_all(users)
+
+    visiteds = [
+        Visited(
+            date=date.today(),
+            user=users[0]
+        ),
+        Visited(
+            date=date.today(),
+            user=users[0]
+        ),
+        Visited(
+            date=date.today(),
+            user=users[1]
+        )
+    ]
+
+    db.session.add_all(visiteds)
 
     db.session.commit()
 
