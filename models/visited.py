@@ -8,15 +8,18 @@ class Visited(db.Model):
     date = db.Column(db.Date) # date of country visit
     
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    country_id = db.Column(db.Integer, db.ForeignKey("country.id"), nullable=False)
 
-    user = db.relationship('User', back_populates='visiteds')
+    user = db.relationship("User", back_populates="visiteds")
+    country = db.relationship("Country", back_populates="visiteds", cascade="all, delete")
 
 class VisitedSchema(ma.Schema):
 
     user = fields.Nested('UserSchema', only=["id", "name", "email"])
+    countries = fields.Nested(fields.Nested("CountrySchema", exclude=["visited"]))
 
     class Meta:
-        fields = ( "id", "date", "user" )
+        fields = ( "id", "date", "user", "country" )
 
 
 
