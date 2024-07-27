@@ -19,6 +19,7 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     visiteds = fields.List(fields.Nested('VisitedSchema', exclude=["user"]))
     countries = fields.List(fields.Nested('CountrySchema', exclude=["user"]))
+
     class Meta:
         fields = ("id", "name", "email", "password", "is_admin", "visiteds", "countries")
 
@@ -27,4 +28,4 @@ class UserSchema(ma.Schema):
 user_schema = UserSchema(exclude=["password"])
 
 # to handle a list of user objects
-user_schema = UserSchema(many=True, exclude=["password"])
+users_schema = UserSchema(many=True, exclude=["password"])
