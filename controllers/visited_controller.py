@@ -1,8 +1,11 @@
+from sqlalchemy.exc import IntegrityError
+from datetime import datetime
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from init import db
 from models.visited import Visited, visited_schema, visiteds_schema
+from models.user import User
 from models.country import Country
 
 visiteds_bp = Blueprint("visiteds", __name__, url_prefix="/visiteds")
@@ -18,20 +21,29 @@ def get_visited(id):
     visited = Visited.query.get_or_404(id)
     return visited_schema.dump(visited)
 
-@visited_controller.route('/visiteds', methods=['POST'])
-def create_visited():
+visiteds_bp = Blueprint('visiteds', __name__)
+
+@visiteds_bp.route('/visiteds', methods=['POST'])
+def add_visited():
+    data = request.get_json()
+
+    if not data.get('date') or not data.get('user_id') or not data.get('country_id'):
+        return {"error": "Missing required fields: date, user_id, country_id"}, 400
+
     try:
-        data = request.get_json()
-        new_visited = Visited(
-            date=data['date'],
+        new_visit = Visited(
+            date=datetime.strptime(data['date'], '%Y-%m-%d').date(),
             user_id=data['user_id'],
             country_id=data['country_id']
         )
-        db.session.add(new_visited)
+        db.session.add(new_visit)
         db.session.commit()
-        return visited_schema.dump(new_visited), 201
+        return {"message": "Visit added successfully"}, 201
+    except IntegrityError as e:
+        db.session.rollback()
+        return {"error": str(e.orig)}, 500
     except Exception as e:
-        return {'message': f'An error occurred: {e}'}, 500
+        return {"error": str(e)}, 500
 
 @visited_controller.route('/visiteds/<int:id>', methods=['PUT'])
 def update_visited(id):
