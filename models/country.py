@@ -16,7 +16,7 @@ class Country(db.Model):
         self.user_id = user_id
 
     user = db.relationship("User", back_populates="countries") # relation to the user model
-    visiteds = db.relationship("Visited", back_populates="country") # relation to the visited model
+    visiteds = db.relationship("Visited", back_populates="country", lazy=True) # relation to the visited model
 
 class CountrySchema(ma.Schema):
     user = fields.Nested("UserSchema", only=["name"])

@@ -24,6 +24,10 @@ def drop_tables():
 def seed_tables():
     # Read CSV file
     df = pd.read_csv('countries.csv')
+
+    if df['country_name'].isnull().any():
+            raise ValueError("CSV file contains null values in 'country_name' column")
+
     # create a list of User instances
     users = [
         User(
@@ -40,6 +44,7 @@ def seed_tables():
 
     db.session.add_all(users)
     db.session.commit()
+    
     admin_user_id = users[0].id
 
     countries = [Country(name=row['country_name'], visited=False, user_id=admin_user_id) for _, row in df.iterrows()]

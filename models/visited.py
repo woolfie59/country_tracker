@@ -11,10 +11,10 @@ class Visited(db.Model):
     country_id = db.Column(db.Integer, db.ForeignKey("countries.id"), nullable=False) # which country was visited
 
     user = db.relationship("User", back_populates="visiteds") # relation to user
-    country = db.relationship("Country", back_populates="visiteds", cascade="all, delete") # relation to country
+    country = db.relationship("Country", back_populates="visiteds") # relation to country
 
 class VisitedSchema(ma.Schema):
-    user = fields.Nested('UserSchema', only=["id", "name", "email"])
+    user = fields.Nested("UserSchema", only=["id", "name", "email"])
     country = fields.Nested("CountrySchema", exclude=["visiteds"])
 
     class Meta:

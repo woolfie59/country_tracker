@@ -25,4 +25,10 @@ def create_app():
     from controllers.visited_controller import visiteds_bp
     app.register_blueprint(visiteds_bp)
 
+    from controllers.country_controller import country_controller
+    app.register_blueprint(country_controller)
+
+    if __name__ == '__main__':
+        app.run(debug=True)
+
     return app
