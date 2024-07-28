@@ -13,8 +13,8 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
-    visiteds = db.relationship("Visited", back_populates="user")
-    countries = db.relationship("Country", back_populates="user")
+    visiteds = db.relationship("Visited", back_populates="user", cascade="all, delete")
+    countries = db.relationship("Country", back_populates="user", cascade="all, delete")
 
 class UserSchema(ma.Schema):
     visiteds = fields.List(fields.Nested('VisitedSchema', exclude=["user"]))
