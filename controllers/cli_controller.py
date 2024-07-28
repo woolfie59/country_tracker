@@ -56,7 +56,7 @@ def seed_tables():
         Visited(
             date=date.today(),
             user=users[1],
-            country=countries[1]
+            country=countries[0]
         ),
         Visited(
             date=date.today(),
