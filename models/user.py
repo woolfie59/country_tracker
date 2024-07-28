@@ -13,17 +13,19 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
-    visiteds = db.relationship('Visited', back_populates="user")
-
+    visiteds = db.relationship("Visited", back_populates="user")
+    countries = db.relationship("Country", back_populates="user")
 
 class UserSchema(ma.Schema):
     visiteds = fields.List(fields.Nested('VisitedSchema', exclude=["user"]))
+    countries = fields.List(fields.Nested('CountrySchema', exclude=["user"]))
+
     class Meta:
-        fields = ("id", "name", "email", "password", "is_admin", "visiteds")
+        fields = ("id", "name", "email", "password", "is_admin", "visiteds", "countries")
 
 
 # to handle a single user object
 user_schema = UserSchema(exclude=["password"])
 
 # to handle a list of user objects
-user_schema = UserSchema(many=True, exclude=["password"])
+users_schema = UserSchema(many=True, exclude=["password"])

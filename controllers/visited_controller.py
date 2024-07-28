@@ -5,8 +5,11 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from init import db
 from models.visited import Visited, visited_schema, visiteds_schema
+from controllers.country_controller import countries_bp
 
 visiteds_bp = Blueprint("visiteds", __name__, url_prefix="/visiteds")
+visiteds_bp.register_blueprint(countries_bp)
+
 
 @visiteds_bp.route("/")
 def get_all_visiteds():

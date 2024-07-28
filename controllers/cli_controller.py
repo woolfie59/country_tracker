@@ -1,3 +1,4 @@
+import pandas as pd
 from datetime import date
 
 from flask import Blueprint
@@ -5,6 +6,7 @@ from flask import Blueprint
 from init import db, bcrypt
 from models.user import User
 from models.visited import Visited
+from models.country import Country
 
 db_commands = Blueprint("db", __name__)
 
@@ -20,6 +22,12 @@ def drop_tables():
 
 @db_commands.cli.command("seed")
 def seed_tables():
+    # Read CSV file
+    df = pd.read_csv('countries.csv')
+
+    if df['country_name'].isnull().any():
+            raise ValueError("CSV file contains null values in 'country_name' column")
+
     # create a list of User instances
     users = [
         User(
@@ -35,24 +43,34 @@ def seed_tables():
     ]
 
     db.session.add_all(users)
+    db.session.commit()
+    
+    admin_user_id = users[0].id
+
+    countries = [Country(name=row['country_name'], visited=False, user_id=admin_user_id) for _, row in df.iterrows()]
+
+    db.session.add_all(countries)
+    db.session.commit()
 
     visiteds = [
         Visited(
             date=date.today(),
-            user=users[0]
+            user=users[1],
+            country=countries[1]
         ),
         Visited(
             date=date.today(),
-            user=users[0]
+            user=users[1],
+            country=countries[2]
         ),
         Visited(
             date=date.today(),
-            user=users[1]
+            user=users[1],
+            country=countries[3]
         )
     ]
 
     db.session.add_all(visiteds)
-
     db.session.commit()
 
     print("Tables seeded")
