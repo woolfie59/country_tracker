@@ -45,7 +45,7 @@ def add_visited():
     except Exception as e:
         return {"error": str(e)}, 500
 
-@visited_controller.route('/visiteds/<int:id>', methods=['PUT'])
+@visited_controller.route('/visiteds/<int:id>', methods=['PUT', 'PATCH'])
 def update_visited(id):
     try:
         data = request.get_json()

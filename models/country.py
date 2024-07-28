@@ -1,5 +1,6 @@
 from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import And
 
 class Country(db.Model):
     __tablename__ = "countries"
